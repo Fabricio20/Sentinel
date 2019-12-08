@@ -29,7 +29,6 @@ public class MembersRPC implements RPCFunction {
             return false;
         }
         return guild.getMembers().parallelStream()
-                .limit(3)
                 .map(JDAMapper::map)
                 .collect(Collectors.toList());
     }

@@ -17,7 +17,6 @@ public class HelloCommand extends SentinelCommand {
 
     @Override
     public void onCommand(Member member, TextChannel channel, String[] args) {
-        System.out.println("Received Command from " + member.getNickname() + " on " + channel.getName());
         List<Member> members = this.getWorker().getRPC().getMembers(channel.getGuild());
         Messenger.send(channel, "Hello " + member.getNickname() + " - " + Arrays.toString(args) + " - " + members.size());
     }

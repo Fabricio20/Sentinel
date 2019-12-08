@@ -2,6 +2,7 @@ package net.notfab.sentinel.sdk.rpc;
 
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
+import net.notfab.sentinel.sdk.core.ExchangeType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class RPCManager {
 
     public RPCManager(MessageBroker broker) {
         this.broker = broker;
+        this.broker.registerChannels(ExchangeType.Fanout, Channels.RPC_REQUESTS, Channels.RPC_RESPONSES);
         this.broker.addListener(new RPCRequestListener(this), Channels.RPC_REQUESTS);
         this.broker.addListener(new RPCResponseListener(this), Channels.RPC_RESPONSES);
     }
@@ -70,7 +72,7 @@ public class RPCManager {
             this.broker.publish(response, Channels.RPC_RESPONSES);
             return true;
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -81,7 +83,7 @@ public class RPCManager {
             this.futures.remove(response.getTag());
             return true;
         } else {
-            return false;
+            return true;
         }
     }
 

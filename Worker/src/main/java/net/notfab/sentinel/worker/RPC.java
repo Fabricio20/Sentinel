@@ -25,7 +25,7 @@ public class RPC {
         roleRequest.setMethod("getMembers");
         roleRequest.addParam("guild", guild.getId());
         RPCAction roleAction = this.manager.ask(roleRequest);
-        RPCResponse response = roleAction.complete(30, TimeUnit.SECONDS);
+        RPCResponse response = roleAction.complete(5, TimeUnit.SECONDS);
         if (response != null && response.getResponse() != null) {
             return (List<Member>) response.getResponse();
         }

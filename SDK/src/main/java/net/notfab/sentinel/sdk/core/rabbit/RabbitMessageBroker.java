@@ -50,12 +50,10 @@ public class RabbitMessageBroker extends MessageBroker {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addListener(SentinelListener listener, String... channels) {
-        if (!(listener instanceof RabbitSentinelListener)) {
-            return;
-        }
         for (String channel : channels) {
-            this.addConsumer(channel, listener.isAutoAck(), (RabbitSentinelListener) listener);
+            this.addConsumer(channel, listener.isAutoAck(), new RabbitSentinelListener(listener));
         }
     }
 
