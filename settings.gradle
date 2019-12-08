@@ -1,2 +1,7 @@
 rootProject.name = 'Sentinel'
 
+include 'SentinelGateway'
+include 'Worker'
+include 'Gateway'
+include 'SDK'
+
