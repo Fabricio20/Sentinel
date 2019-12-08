@@ -3,6 +3,7 @@ package net.notfab.sentinel.gateway;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.entities.events.CommandEvent;
 import net.notfab.sentinel.sdk.mapper.JDAMapper;
@@ -19,7 +20,6 @@ public class CommandListener extends ListenerAdapter {
 
     private final Pattern argPattern = Pattern.compile("(?:([^\\s\"]+)|\"((?:\\w+|\\\\\"|[^\"])+)\")");
     private final MessageBroker broker;
-    private final String CHANNEL_NAME = "Sentinel:Commands:";
 
     public CommandListener(MessageBroker broker) {
         this.broker = broker;
@@ -60,7 +60,7 @@ public class CommandListener extends ListenerAdapter {
         commandEvent.setName(commandName);
         commandEvent.setMember(JDAMapper.map(Objects.requireNonNull(event.getMember())));
         commandEvent.setChannel(JDAMapper.map(event.getChannel()));
-        broker.sendMessage(commandEvent, CHANNEL_NAME + commandName.toUpperCase());
+        broker.sendMessage(commandEvent, Channels.COMMAND_PREFIX + commandName.toUpperCase());
     }
 
     private List<String> getPrefixes(Guild guild) {

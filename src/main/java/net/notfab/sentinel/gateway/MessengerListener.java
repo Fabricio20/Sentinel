@@ -1,8 +1,13 @@
 package net.notfab.sentinel.gateway;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.notfab.sentinel.sdk.entities.SentinelListener;
+import net.notfab.sentinel.sdk.entities.messenger.Embed;
+import net.notfab.sentinel.sdk.entities.messenger.Message;
 import net.notfab.sentinel.sdk.entities.requests.GuildMessengerRequest;
 
 public class MessengerListener extends SentinelListener<GuildMessengerRequest> {
@@ -18,10 +23,38 @@ public class MessengerListener extends SentinelListener<GuildMessengerRequest> {
     public void onMessage(String channel, GuildMessengerRequest message) {
         TextChannel textChannel = jda.getTextChannelById(message.getChannel().getId());
         if (textChannel != null) {
-            textChannel.sendMessage(message.getMessage()).queue();
+            textChannel.sendMessage(this.prepareMessage(message.getMessage(), message.isOverride()).build()).queue();
         } else {
             System.err.println("Unknown TextChannel");
         }
+    }
+
+    private MessageBuilder prepareMessage(Message message, boolean isOverride) {
+        MessageBuilder builder = new MessageBuilder();
+        if (message.getContent() != null) {
+            builder.setContent(message.getContent());
+        }
+        if (message.getEmbed() != null) {
+            builder.setEmbed(this.prepareEmbed(message.getEmbed()).build());
+        }
+        if (!isOverride) {
+            builder.stripMentions(this.jda, MentionType.HERE, MentionType.EVERYONE);
+        }
+        return builder;
+    }
+
+    private EmbedBuilder prepareEmbed(Embed embed) {
+        EmbedBuilder builder = new EmbedBuilder();
+        if (embed.getDescription() != null) {
+            builder.setDescription(embed.getDescription());
+        }
+        if (embed.getTitle() != null) {
+            builder.setTitle(embed.getTitle(), embed.getTitleURL());
+        }
+        if (embed.getAuthor() != null) {
+            builder.setAuthor(embed.getAuthor(), embed.getAuthorURL(), embed.getAuthorIcon());
+        }
+        return builder;
     }
 
 }
