@@ -1,5 +1,6 @@
 package net.notfab.sentinel.gateway.jda;
 
+import lombok.Getter;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,6 +12,7 @@ import net.notfab.sentinel.sdk.Environment;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.core.ExchangeType;
 import net.notfab.sentinel.sdk.core.redis.RedisMessageBroker;
+import net.notfab.sentinel.sdk.rpc.RPCManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +27,13 @@ public class JDASentinelGateway extends ListenerAdapter implements SentinelGatew
     private static final Logger logger = LoggerFactory.getLogger(SentinelGateway.class);
     private final MessageBroker broker;
 
+    @Getter
+    private final RPCManager rpcManager;
+
     public JDASentinelGateway(MessageBroker broker) {
         this.broker = broker;
         this.broker.registerChannels(ExchangeType.Fanout, Channels.MESSENGER);
+        this.rpcManager = new RPCManager(this.broker);
         try {
             new JDABuilder()
                     .setToken(Environment.get("TOKEN", null))
