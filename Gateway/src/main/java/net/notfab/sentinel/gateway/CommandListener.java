@@ -3,10 +3,10 @@ package net.notfab.sentinel.gateway;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.notfab.sentinel.gateway.mapper.JDAMapper;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.entities.events.CommandEvent;
-import net.notfab.sentinel.sdk.mapper.JDAMapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

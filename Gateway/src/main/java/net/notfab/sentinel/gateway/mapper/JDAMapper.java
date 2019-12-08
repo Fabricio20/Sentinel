@@ -1,4 +1,4 @@
-package net.notfab.sentinel.sdk.mapper;
+package net.notfab.sentinel.gateway.mapper;
 
 import net.notfab.sentinel.sdk.entities.discord.Guild;
 import net.notfab.sentinel.sdk.entities.discord.Member;
