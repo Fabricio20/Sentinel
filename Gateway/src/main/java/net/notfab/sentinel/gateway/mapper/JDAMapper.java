@@ -32,8 +32,10 @@ public class JDAMapper {
     public static TextChannel map(net.dv8tion.jda.api.entities.TextChannel entity) {
         TextChannel channel = new TextChannel();
         channel.setId(entity.getIdLong());
-        channel.setName(entity.getName());
         channel.setGuild(map(entity.getGuild()));
+        channel.setName(entity.getName());
+        channel.setTopic(entity.getTopic());
+        channel.setSlowMode(entity.getSlowmode());
         return channel;
     }
 
