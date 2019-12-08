@@ -7,6 +7,6 @@ import net.notfab.sentinel.sdk.entities.SentinelMessage;
 public class RPCResponse implements SentinelMessage {
 
     private String tag;
-    private String response;
+    private Object response;
 
 }

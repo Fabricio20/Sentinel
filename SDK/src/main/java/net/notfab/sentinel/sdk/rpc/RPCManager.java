@@ -1,7 +1,5 @@
 package net.notfab.sentinel.sdk.rpc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
 
@@ -11,15 +9,14 @@ import java.util.UUID;
 
 public class RPCManager {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, RPCAction> futures = new HashMap<>();
     private final Map<String, RPCFunction> functionMap = new HashMap<>();
     private final MessageBroker broker;
 
     public RPCManager(MessageBroker broker) {
         this.broker = broker;
-        this.broker.addListener(new RPCRequestListener(this), Channels.RPC);
-        this.broker.addListener(new RPCResponseListener(this), Channels.RPC);
+        this.broker.addListener(new RPCRequestListener(this), Channels.RPC_REQUESTS);
+        this.broker.addListener(new RPCResponseListener(this), Channels.RPC_RESPONSES);
     }
 
     /**
@@ -32,7 +29,7 @@ public class RPCManager {
         request.setTag(UUID.randomUUID().toString());
         RPCAction future = new RPCAction();
         this.futures.put(request.getTag(), future);
-        this.broker.publish(request, Channels.RPC);
+        this.broker.publish(request, Channels.RPC_REQUESTS);
         return future;
     }
 
@@ -43,7 +40,7 @@ public class RPCManager {
      */
     public void send(RPCRequest request) {
         request.setTag(UUID.randomUUID().toString());
-        this.broker.publish(request, Channels.RPC);
+        this.broker.publish(request, Channels.RPC_REQUESTS);
     }
 
     /**
@@ -59,19 +56,19 @@ public class RPCManager {
         if (this.functionMap.containsKey(request.getMethod())) {
             RPCFunction function = this.functionMap.get(request.getMethod());
             Object payload = function.onRequest(request);
-            try {
-                // Non-returning RPC
-                if (payload == null) {
-                    return true;
-                }
-                RPCResponse response = new RPCResponse();
-                response.setTag(request.getTag());
-                response.setResponse(this.objectMapper.writeValueAsString(payload));
-                this.broker.publish(response, request.getMethod());
+            // Non-returning RPC
+            if (payload == null) {
                 return true;
-            } catch (JsonProcessingException e) {
-                return false;
             }
+            // Possible error
+            if (payload instanceof Boolean) {
+                return (boolean) payload;
+            }
+            RPCResponse response = new RPCResponse();
+            response.setTag(request.getTag());
+            response.setResponse(payload);
+            this.broker.publish(response, Channels.RPC_RESPONSES);
+            return true;
         } else {
             return false;
         }

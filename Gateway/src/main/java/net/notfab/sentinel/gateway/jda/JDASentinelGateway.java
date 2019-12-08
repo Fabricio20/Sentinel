@@ -4,14 +4,12 @@ import lombok.Getter;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.notfab.sentinel.example.gateway.rabbit.MessengerListenerRabbit;
-import net.notfab.sentinel.example.gateway.redis.MessengerListenerRedis;
 import net.notfab.sentinel.gateway.SentinelGateway;
+import net.notfab.sentinel.gateway.jda.rpc.MembersRPC;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.Environment;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.core.ExchangeType;
-import net.notfab.sentinel.sdk.core.redis.RedisMessageBroker;
 import net.notfab.sentinel.sdk.rpc.RPCManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +53,8 @@ public class JDASentinelGateway extends ListenerAdapter implements SentinelGatew
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         logger.info("JDA Ready");
-        if (broker instanceof RedisMessageBroker) {
-            this.broker.addListener(new MessengerListenerRedis(event.getJDA()), Channels.MESSENGER);
-        } else {
-            this.broker.addListener(new MessengerListenerRabbit(event.getJDA()), Channels.MESSENGER);
-        }
+        this.broker.addListener(new MessengerListener(event.getJDA()), Channels.MESSENGER);
+        this.rpcManager.addFunction(new MembersRPC(event.getJDA()));
     }
 
     @Override

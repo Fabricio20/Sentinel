@@ -1,8 +1,6 @@
 package net.notfab.sentinel.sdk.rpc;
 
 import net.notfab.sentinel.sdk.core.SentinelListener;
-import net.notfab.sentinel.sdk.rpc.RPCManager;
-import net.notfab.sentinel.sdk.rpc.RPCResponse;
 
 public class RPCResponseListener implements SentinelListener<RPCResponse> {
 
@@ -10,6 +8,11 @@ public class RPCResponseListener implements SentinelListener<RPCResponse> {
 
     RPCResponseListener(RPCManager rpcManager) {
         this.rpcManager = rpcManager;
+    }
+
+    @Override
+    public Class<RPCResponse> getClazz() {
+        return RPCResponse.class;
     }
 
     @Override

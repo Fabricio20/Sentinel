@@ -32,11 +32,9 @@ public class RedisMessageBroker extends MessageBroker {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addListener(SentinelListener listener, String... channels) {
-        if (!(listener instanceof RedisSentinelListener)) {
-            return;
-        }
-        RedisSentinelListener redisListener = (RedisSentinelListener) listener;
+        RedisSentinelListener redisListener = new RedisSentinelListener(listener);
         channels = Stream.of(channels).map(String::toUpperCase).toArray(String[]::new);
         Stream.of(channels).forEach((channel) -> this.listeners.compute(channel.toUpperCase(), (k, v) -> {
             if (v == null) {

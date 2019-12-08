@@ -12,8 +12,8 @@ public class Start {
         MessageBroker broker = new RedisMessageBroker();
         // --
         SentinelWorker worker = new SentinelWorker(broker);
-        worker.getCommandManager().add(new HelloCommand());
-        worker.getCommandManager().add(new EmbedCommand());
+        worker.getCommandManager().add(new HelloCommand(worker));
+        worker.getCommandManager().add(new EmbedCommand(worker));
         while (true) {
             Thread.sleep(60000);
         }

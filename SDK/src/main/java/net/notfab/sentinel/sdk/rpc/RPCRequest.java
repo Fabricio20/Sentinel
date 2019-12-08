@@ -14,8 +14,16 @@ public class RPCRequest implements SentinelMessage {
     private Map<String, Object> parameters = new HashMap<>();
 
     public RPCRequest addParam(String name, Object value) {
-        this.parameters.put(name, value);
+        this.parameters.put(name.toLowerCase(), value);
         return this;
+    }
+
+    public boolean hasParam(String name) {
+        return this.parameters.containsKey(name.toLowerCase());
+    }
+
+    public Object getParam(String name) {
+        return this.parameters.get(name.toLowerCase());
     }
 
 }

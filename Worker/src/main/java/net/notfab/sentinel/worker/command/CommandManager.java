@@ -4,7 +4,6 @@ import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.core.ExchangeType;
 import net.notfab.sentinel.sdk.core.SentinelListener;
-import net.notfab.sentinel.sdk.core.rabbit.RabbitMessageBroker;
 import net.notfab.sentinel.worker.SentinelCommand;
 
 public class CommandManager {
@@ -16,12 +15,7 @@ public class CommandManager {
     }
 
     public void add(SentinelCommand command) {
-        SentinelListener listener;
-        if (broker instanceof RabbitMessageBroker) {
-            listener = new CommandListenerRabbit(command);
-        } else {
-            listener = new CommandListenerRedis(command);
-        }
+        SentinelListener listener = new CommandListener(command);
         String[] channelNames = command.getNames().stream()
                 .map(x -> Channels.COMMAND_PREFIX + x.toUpperCase())
                 .toArray(String[]::new);

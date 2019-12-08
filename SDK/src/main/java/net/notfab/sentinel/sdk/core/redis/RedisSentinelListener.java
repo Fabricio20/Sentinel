@@ -9,7 +9,7 @@ import redis.clients.jedis.JedisPubSub;
 
 import java.io.IOException;
 
-public abstract class RedisSentinelListener<T> extends JedisPubSub implements SentinelListener<T> {
+public class RedisSentinelListener<T> extends JedisPubSub {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(RedisSentinelListener.class);
@@ -18,25 +18,17 @@ public abstract class RedisSentinelListener<T> extends JedisPubSub implements Se
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final Class<T> tClass;
+    private final SentinelListener<T> listener;
 
-    public RedisSentinelListener(Class<T> tClass) {
-        this.tClass = tClass;
-    }
-
-    @Override
-    public abstract boolean onMessage(String channel, T message);
-
-    @Override
-    public boolean isAutoAck() {
-        return true;
+    RedisSentinelListener(SentinelListener<T> listener) {
+        this.listener = listener;
     }
 
     @Override
     public void onMessage(String channel, String message) {
         try {
-            T object = objectMapper.readValue(message, tClass);
-            this.onMessage(channel, object);
+            T object = objectMapper.readValue(message, this.listener.getClazz());
+            this.listener.onMessage(channel, object);
         } catch (IOException ex) {
             logger.error("Error during deserialization", ex);
         }

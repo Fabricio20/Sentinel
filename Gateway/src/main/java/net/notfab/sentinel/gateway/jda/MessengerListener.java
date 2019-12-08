@@ -1,22 +1,31 @@
-package net.notfab.sentinel.example.gateway.redis;
+package net.notfab.sentinel.gateway.jda;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.notfab.sentinel.sdk.core.redis.RedisSentinelListener;
+import net.notfab.sentinel.sdk.core.SentinelListener;
 import net.notfab.sentinel.sdk.entities.messenger.Embed;
 import net.notfab.sentinel.sdk.entities.messenger.Message;
 import net.notfab.sentinel.sdk.entities.requests.GuildMessengerRequest;
 
-public class MessengerListenerRedis extends RedisSentinelListener<GuildMessengerRequest> {
+public class MessengerListener implements SentinelListener<GuildMessengerRequest> {
 
     private final JDA jda;
 
-    public MessengerListenerRedis(JDA jda) {
-        super(GuildMessengerRequest.class);
+    MessengerListener(JDA jda) {
         this.jda = jda;
+    }
+
+    @Override
+    public Class<GuildMessengerRequest> getClazz() {
+        return GuildMessengerRequest.class;
+    }
+
+    @Override
+    public boolean isAutoAck() {
+        return false;
     }
 
     @Override

@@ -5,11 +5,12 @@ import net.notfab.sentinel.sdk.entities.discord.Member;
 import net.notfab.sentinel.sdk.entities.discord.TextChannel;
 import net.notfab.sentinel.sdk.entities.messenger.EmbedBuilder;
 import net.notfab.sentinel.worker.Messenger;
+import net.notfab.sentinel.worker.SentinelWorker;
 
 public class EmbedCommand extends SentinelCommand {
 
-    public EmbedCommand() {
-        super("embed");
+    public EmbedCommand(SentinelWorker worker) {
+        super(worker, "embed");
     }
 
     @Override

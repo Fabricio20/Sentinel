@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public abstract class RabbitSentinelListener<T> implements SentinelListener<T>, Consumer {
+public class RabbitSentinelListener<T> implements Consumer {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(RabbitSentinelListener.class);
@@ -22,24 +22,21 @@ public abstract class RabbitSentinelListener<T> implements SentinelListener<T>, 
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final Class<T> tClass;
+    private final SentinelListener<T> listener;
 
-    public RabbitSentinelListener(Class<T> tClass) {
-        this.tClass = tClass;
+    RabbitSentinelListener(SentinelListener<T> listener) {
+        this.listener = listener;
     }
-
-    @Override
-    public abstract boolean onMessage(String channel, T message);
 
     @Override
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
         try {
-            T object = objectMapper.readValue(body, tClass);
-            if (this.isAutoAck()) {
-                this.onMessage(envelope.getExchange(), object);
+            T object = objectMapper.readValue(body, this.listener.getClazz());
+            if (this.listener.isAutoAck()) {
+                this.listener.onMessage(envelope.getExchange(), object);
             } else {
                 MessageBroker.getInstance()
-                        .ack(envelope.getDeliveryTag(), this.onMessage(envelope.getExchange(), object));
+                        .ack(envelope.getDeliveryTag(), this.listener.onMessage(envelope.getExchange(), object));
             }
         } catch (IOException ex) {
             logger.error("Error during deserialization", ex);

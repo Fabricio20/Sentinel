@@ -15,12 +15,15 @@ public class SentinelWorker {
     private final CommandManager commandManager;
     @Getter
     private final RPCManager rpcManager;
+    @Getter
+    private final RPC RPC;
 
     public SentinelWorker(MessageBroker broker) {
         this.broker = broker;
         this.broker.registerChannels(ExchangeType.Fanout, Channels.MESSENGER);
         this.commandManager = new CommandManager(this.broker);
         this.rpcManager = new RPCManager(this.broker);
+        this.RPC = new RPC(this.rpcManager);
     }
 
     public void shutdown() {

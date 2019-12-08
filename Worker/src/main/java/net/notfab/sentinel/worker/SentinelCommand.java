@@ -11,8 +11,11 @@ public abstract class SentinelCommand {
 
     @Getter
     private final List<String> names;
+    @Getter
+    private final SentinelWorker worker;
 
-    public SentinelCommand(String... names) {
+    public SentinelCommand(SentinelWorker worker, String... names) {
+        this.worker = worker;
         this.names = Arrays.asList(names);
     }
 
