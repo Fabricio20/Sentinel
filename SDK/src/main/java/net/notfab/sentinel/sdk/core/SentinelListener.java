@@ -2,8 +2,8 @@ package net.notfab.sentinel.sdk.core;
 
 public interface SentinelListener<T> {
 
-    ExchangeType getExchangeType();
+    boolean isAutoAck();
 
-    void onMessage(String channel, T message);
+    boolean onMessage(String channel, T message);
 
 }

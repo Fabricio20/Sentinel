@@ -1,4 +1,4 @@
-package net.notfab.sentinel.worker.commands;
+package net.notfab.sentinel.example.worker.commands;
 
 import net.notfab.sentinel.worker.SentinelCommand;
 import net.notfab.sentinel.sdk.entities.discord.Member;

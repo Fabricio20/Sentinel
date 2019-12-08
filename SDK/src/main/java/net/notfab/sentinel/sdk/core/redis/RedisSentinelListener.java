@@ -2,7 +2,6 @@ package net.notfab.sentinel.sdk.core.redis;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.notfab.sentinel.sdk.core.ExchangeType;
 import net.notfab.sentinel.sdk.core.SentinelListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +25,11 @@ public abstract class RedisSentinelListener<T> extends JedisPubSub implements Se
     }
 
     @Override
-    public abstract void onMessage(String channel, T message);
+    public abstract boolean onMessage(String channel, T message);
 
     @Override
-    public ExchangeType getExchangeType() {
-        return ExchangeType.Fanout;
+    public boolean isAutoAck() {
+        return true;
     }
 
     @Override

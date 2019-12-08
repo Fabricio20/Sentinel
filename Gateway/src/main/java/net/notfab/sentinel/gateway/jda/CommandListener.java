@@ -1,8 +1,9 @@
-package net.notfab.sentinel.gateway;
+package net.notfab.sentinel.gateway.jda;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.notfab.sentinel.gateway.SentinelGateway;
 import net.notfab.sentinel.gateway.mapper.JDAMapper;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
@@ -10,7 +11,6 @@ import net.notfab.sentinel.sdk.entities.events.CommandEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -19,9 +19,11 @@ import java.util.regex.Pattern;
 public class CommandListener extends ListenerAdapter {
 
     private final Pattern argPattern = Pattern.compile("(?:([^\\s\"]+)|\"((?:\\w+|\\\\\"|[^\"])+)\")");
+    private final SentinelGateway gateway;
     private final MessageBroker broker;
 
-    public CommandListener(MessageBroker broker) {
+    public CommandListener(SentinelGateway gateway, MessageBroker broker) {
+        this.gateway = gateway;
         this.broker = broker;
     }
 
@@ -64,7 +66,7 @@ public class CommandListener extends ListenerAdapter {
     }
 
     private List<String> getPrefixes(Guild guild) {
-        return Arrays.asList("L!", "!", "<@147409622603399168>", "<@!147409622603399168>");
+        return this.gateway.getPrefixProvider().apply(guild.getIdLong());
     }
 
     private List<String> getArguments(String rawArgs) {

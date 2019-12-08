@@ -43,12 +43,19 @@ public class RabbitMessageBroker extends MessageBroker {
     }
 
     @Override
+    public void registerChannels(ExchangeType exchangeType, String... channels) {
+        for (String channel : channels) {
+            this.addExchange(channel, exchangeType, Map.of("x-message-ttl", 5000));
+        }
+    }
+
+    @Override
     public void addListener(SentinelListener listener, String... channels) {
         if (!(listener instanceof RabbitSentinelListener)) {
             return;
         }
         for (String channel : channels) {
-            this.addExchange(channel, listener.getExchangeType(), Map.of("x-message-ttl", 5000));
+            this.addConsumer(channel, listener.isAutoAck(), (RabbitSentinelListener) listener);
         }
     }
 
@@ -61,6 +68,19 @@ public class RabbitMessageBroker extends MessageBroker {
             }
         } catch (IOException ex) {
             logger.error("Exception while publishing message to " + Arrays.toString(channels), ex);
+        }
+    }
+
+    @Override
+    public void ack(long deliveryTag, boolean ack) {
+        try {
+            if (ack) {
+                this.getChannel().basicAck(deliveryTag, false);
+            } else {
+                this.getChannel().basicNack(deliveryTag, false, true);
+            }
+        } catch (IOException ex) {
+            logger.error("Exception acking message " + deliveryTag, ex);
         }
     }
 
@@ -90,7 +110,7 @@ public class RabbitMessageBroker extends MessageBroker {
      */
     private void addConsumer(String queue, boolean autoAck, Consumer consumer) {
         try {
-            this.getChannel().basicConsume(queue, autoAck, consumer);
+            this.getChannel().basicConsume(queue.toLowerCase(), autoAck, consumer);
         } catch (IOException ex) {
             logger.error("Error declaring consumer " + queue, ex);
         }

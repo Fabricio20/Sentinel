@@ -3,6 +3,7 @@ package net.notfab.sentinel.sdk.core.redis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.notfab.sentinel.sdk.MessageBroker;
+import net.notfab.sentinel.sdk.core.ExchangeType;
 import net.notfab.sentinel.sdk.core.SentinelListener;
 import net.notfab.sentinel.sdk.entities.SentinelMessage;
 import org.slf4j.Logger;
@@ -64,6 +65,16 @@ public class RedisMessageBroker extends MessageBroker {
         } catch (JsonProcessingException ex) {
             logger.error("Error creating message payload", ex);
         }
+    }
+
+    @Override
+    public void registerChannels(ExchangeType exchangeType, String... channels) {
+        // Nothing
+    }
+
+    @Override
+    public void ack(long deliveryTag, boolean ack) {
+        // Nothing
     }
 
     @Override

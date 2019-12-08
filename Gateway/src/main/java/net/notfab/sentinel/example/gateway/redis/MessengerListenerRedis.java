@@ -1,4 +1,4 @@
-package net.notfab.sentinel.gateway;
+package net.notfab.sentinel.example.gateway.redis;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -20,13 +20,14 @@ public class MessengerListenerRedis extends RedisSentinelListener<GuildMessenger
     }
 
     @Override
-    public void onMessage(String channel, GuildMessengerRequest message) {
+    public boolean onMessage(String channel, GuildMessengerRequest message) {
         TextChannel textChannel = jda.getTextChannelById(message.getChannel().getId());
         if (textChannel != null) {
             textChannel.sendMessage(this.prepareMessage(message.getMessage(), message.isOverride()).build()).queue();
         } else {
             System.err.println("Unknown TextChannel");
         }
+        return true;
     }
 
     private MessageBuilder prepareMessage(Message message, boolean isOverride) {

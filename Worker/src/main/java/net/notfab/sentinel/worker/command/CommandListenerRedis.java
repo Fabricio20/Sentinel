@@ -1,7 +1,8 @@
-package net.notfab.sentinel.worker;
+package net.notfab.sentinel.worker.command;
 
 import net.notfab.sentinel.sdk.core.redis.RedisSentinelListener;
 import net.notfab.sentinel.sdk.entities.events.CommandEvent;
+import net.notfab.sentinel.worker.SentinelCommand;
 
 public class CommandListenerRedis extends RedisSentinelListener<CommandEvent> {
 
@@ -13,8 +14,9 @@ public class CommandListenerRedis extends RedisSentinelListener<CommandEvent> {
     }
 
     @Override
-    public void onMessage(String channel, CommandEvent message) {
+    public boolean onMessage(String channel, CommandEvent message) {
         command.onCommand(message.getMember(), message.getChannel(), message.getArgs());
+        return true;
     }
 
 }

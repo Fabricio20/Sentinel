@@ -1,8 +1,10 @@
 package net.notfab.sentinel.worker;
 
 import lombok.Getter;
+import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.core.redis.RedisMessageBroker;
+import net.notfab.sentinel.sdk.core.ExchangeType;
+import net.notfab.sentinel.worker.command.CommandManager;
 
 public class SentinelWorker {
 
@@ -11,8 +13,9 @@ public class SentinelWorker {
     @Getter
     private final CommandManager commandManager;
 
-    public SentinelWorker() {
-        this.broker = new RedisMessageBroker();
+    public SentinelWorker(MessageBroker broker) {
+        this.broker = broker;
+        this.broker.registerChannels(ExchangeType.Fanout, Channels.MESSENGER);
         this.commandManager = new CommandManager(this.broker);
     }
 
