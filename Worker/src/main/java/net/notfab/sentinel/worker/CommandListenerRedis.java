@@ -1,14 +1,13 @@
-package net.notfab.sentinel.sdk;
+package net.notfab.sentinel.worker;
 
-import net.notfab.sentinel.sdk.entities.SentinelCommand;
-import net.notfab.sentinel.sdk.entities.SentinelListener;
+import net.notfab.sentinel.sdk.core.redis.RedisSentinelListener;
 import net.notfab.sentinel.sdk.entities.events.CommandEvent;
 
-public class CommandListener extends SentinelListener<CommandEvent> {
+public class CommandListenerRedis extends RedisSentinelListener<CommandEvent> {
 
     private final SentinelCommand command;
 
-    public CommandListener(SentinelCommand command) {
+    public CommandListenerRedis(SentinelCommand command) {
         super(CommandEvent.class);
         this.command = command;
     }

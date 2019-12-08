@@ -1,4 +1,4 @@
-package net.notfab.sentinel.sdk.entities;
+package net.notfab.sentinel.worker;
 
 import lombok.Getter;
 import net.notfab.sentinel.sdk.entities.discord.Member;

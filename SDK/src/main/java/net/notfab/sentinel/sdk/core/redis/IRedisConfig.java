@@ -1,4 +1,4 @@
-package net.notfab.sentinel.sdk;
+package net.notfab.sentinel.sdk.core.redis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 

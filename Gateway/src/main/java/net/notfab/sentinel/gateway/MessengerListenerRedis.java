@@ -5,16 +5,16 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.notfab.sentinel.sdk.entities.SentinelListener;
+import net.notfab.sentinel.sdk.core.redis.RedisSentinelListener;
 import net.notfab.sentinel.sdk.entities.messenger.Embed;
 import net.notfab.sentinel.sdk.entities.messenger.Message;
 import net.notfab.sentinel.sdk.entities.requests.GuildMessengerRequest;
 
-public class MessengerListener extends SentinelListener<GuildMessengerRequest> {
+public class MessengerListenerRedis extends RedisSentinelListener<GuildMessengerRequest> {
 
     private final JDA jda;
 
-    public MessengerListener(JDA jda) {
+    public MessengerListenerRedis(JDA jda) {
         super(GuildMessengerRequest.class);
         this.jda = jda;
     }

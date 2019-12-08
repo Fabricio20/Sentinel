@@ -60,7 +60,7 @@ public class CommandListener extends ListenerAdapter {
         commandEvent.setName(commandName);
         commandEvent.setMember(JDAMapper.map(Objects.requireNonNull(event.getMember())));
         commandEvent.setChannel(JDAMapper.map(event.getChannel()));
-        broker.sendMessage(commandEvent, Channels.COMMAND_PREFIX + commandName.toUpperCase());
+        broker.publish(commandEvent, Channels.COMMAND_PREFIX + commandName.toUpperCase());
     }
 
     private List<String> getPrefixes(Guild guild) {

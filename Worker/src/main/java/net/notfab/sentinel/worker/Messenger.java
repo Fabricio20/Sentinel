@@ -31,7 +31,7 @@ public class Messenger {
         GuildMessengerRequest request = new GuildMessengerRequest();
         request.setChannel(channel);
         request.setMessage(message);
-        MessageBroker.getInstance().sendMessage(request, Channels.MESSENGER);
+        MessageBroker.getInstance().publish(request, Channels.MESSENGER);
     }
 
 }

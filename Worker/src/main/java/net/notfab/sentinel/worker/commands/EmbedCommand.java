@@ -1,6 +1,6 @@
 package net.notfab.sentinel.worker.commands;
 
-import net.notfab.sentinel.sdk.entities.SentinelCommand;
+import net.notfab.sentinel.worker.SentinelCommand;
 import net.notfab.sentinel.sdk.entities.discord.Member;
 import net.notfab.sentinel.sdk.entities.discord.TextChannel;
 import net.notfab.sentinel.sdk.entities.messenger.EmbedBuilder;
@@ -17,6 +17,8 @@ public class EmbedCommand extends SentinelCommand {
         Messenger.send(channel, new EmbedBuilder().setTitle("Embed Title")
                 .setDescription("Description Field")
                 .setAuthor(member.getNickname(), "https://google.com/", "https://via.placeholder.com/256")
+                .setColorHex("#FF00AA")
+                .setImage("https://i.kym-cdn.com/entries/icons/original/000/016/546/hidethepainharold.jpg")
                 .build());
     }
 

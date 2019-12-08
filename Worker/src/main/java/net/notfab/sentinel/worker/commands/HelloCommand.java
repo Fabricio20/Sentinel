@@ -1,6 +1,6 @@
 package net.notfab.sentinel.worker.commands;
 
-import net.notfab.sentinel.sdk.entities.SentinelCommand;
+import net.notfab.sentinel.worker.SentinelCommand;
 import net.notfab.sentinel.sdk.entities.discord.Member;
 import net.notfab.sentinel.sdk.entities.discord.TextChannel;
 import net.notfab.sentinel.worker.Messenger;
