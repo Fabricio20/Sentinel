@@ -2,6 +2,9 @@ package net.notfab.sentinel.sdk.entities.messenger;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class Embed {
 
@@ -11,5 +14,11 @@ public class Embed {
     private String author;
     private String authorURL;
     private String authorIcon;
+    private String footer;
+    private String footerIcon;
+    private String image;
+    private String thumbnail;
+    private Integer color;
+    private List<EmbedField> fieldList = new ArrayList<>();
 
 }

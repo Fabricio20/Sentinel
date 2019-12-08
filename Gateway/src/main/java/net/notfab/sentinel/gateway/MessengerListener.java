@@ -54,6 +54,27 @@ public class MessengerListener extends SentinelListener<GuildMessengerRequest> {
         if (embed.getAuthor() != null) {
             builder.setAuthor(embed.getAuthor(), embed.getAuthorURL(), embed.getAuthorIcon());
         }
+        if (!embed.getFieldList().isEmpty()) {
+            embed.getFieldList().forEach(x -> {
+                if (x.isBlank()) {
+                    builder.addBlankField(x.isInline());
+                } else {
+                    builder.addField(x.getName(), x.getValue(), x.isInline());
+                }
+            });
+        }
+        if (embed.getFooter() != null) {
+            builder.setFooter(embed.getFooter(), embed.getFooterIcon());
+        }
+        if (embed.getImage() != null) {
+            builder.setImage(embed.getImage());
+        }
+        if (embed.getThumbnail() != null) {
+            builder.setThumbnail(embed.getThumbnail());
+        }
+        if (embed.getColor() != null) {
+            builder.setColor(embed.getColor());
+        }
         return builder;
     }
 
