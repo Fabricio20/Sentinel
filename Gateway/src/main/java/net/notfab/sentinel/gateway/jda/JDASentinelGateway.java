@@ -1,65 +1,62 @@
 package net.notfab.sentinel.gateway.jda;
 
 import lombok.Getter;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.notfab.sentinel.gateway.BotPrefix;
 import net.notfab.sentinel.gateway.SentinelGateway;
+import net.notfab.sentinel.gateway.jda.listeners.CommandListener;
 import net.notfab.sentinel.gateway.jda.rpc.MembersRPC;
 import net.notfab.sentinel.sdk.Channels;
-import net.notfab.sentinel.sdk.Environment;
+import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.core.ExchangeType;
 import net.notfab.sentinel.sdk.rpc.RPCManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.security.auth.login.LoginException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class JDASentinelGateway extends ListenerAdapter implements SentinelGateway {
+public class JDASentinelGateway implements SentinelGateway {
 
-    private static final Logger logger = LoggerFactory.getLogger(SentinelGateway.class);
-    private final MessageBroker broker;
+    private final MessageBroker messageBroker;
+    private final long num_shards;
+    private final Function<Long, JDA> shardFunction;
+    private final Function<Long, List<BotPrefix>> prefixFunction;
+    private SentinelListener sentinelListener;
 
     @Getter
     private final RPCManager rpcManager;
 
-    public JDASentinelGateway(MessageBroker broker) {
-        this.broker = broker;
-        this.broker.registerChannels(ExchangeType.Fanout, Channels.MESSENGER);
-        this.rpcManager = new RPCManager(this.broker);
-        try {
-            new JDABuilder()
-                    .setToken(Environment.get("TOKEN", null))
-                    .addEventListeners(new CommandListener(this, this.broker))
-                    .addEventListeners(this)
-                    .build();
-        } catch (LoginException e) {
-            e.printStackTrace();
-        }
-        while (true) {
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    JDASentinelGateway(MessageBroker messageBroker, long num_shards,
+                       Function<Long, JDA> shardFunction,
+                       Function<Long, List<BotPrefix>> prefixFunction, SentinelListener sentinelListener) {
+        this.messageBroker = messageBroker;
+        this.num_shards = num_shards;
+        this.shardFunction = shardFunction;
+        this.prefixFunction = prefixFunction;
+        this.sentinelListener = sentinelListener;
+        this.rpcManager = new RPCManager(this.messageBroker);
+        this.addListeners();
+        this.addRPCFunctions();
+    }
+
+    public JDA getJDA(long snowflake) {
+        return this.shardFunction.apply((snowflake >> 22) % num_shards);
     }
 
     @Override
-    public void onReady(@Nonnull ReadyEvent event) {
-        logger.info("JDA Ready");
-        this.broker.addListener(new MessengerListener(event.getJDA()), Channels.MESSENGER);
-        this.rpcManager.addFunction(new MembersRPC(event.getJDA()));
+    public List<BotPrefix> getPrefixList(long guildId) {
+        return this.prefixFunction.apply(guildId);
     }
 
-    @Override
-    public Function<Long, List<String>> getPrefixProvider() {
-        return guild -> Arrays.asList("L!", "!", "<@147409622603399168>", "<@!147409622603399168>");
+    private void addListeners() {
+        // Sentinel
+        this.messageBroker.addListener(new MessengerListener(this), ExchangeType.DIRECT, Channels.MESSENGER);
+        // JDA
+        this.sentinelListener.addListener(GuildMessageReceivedEvent.class, new CommandListener(this.messageBroker, this));
+    }
+
+    private void addRPCFunctions() {
+        this.rpcManager.addFunction(new MembersRPC(this));
     }
 
 }

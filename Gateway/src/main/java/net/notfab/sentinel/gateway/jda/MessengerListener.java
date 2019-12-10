@@ -1,91 +1,30 @@
 package net.notfab.sentinel.gateway.jda;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.notfab.sentinel.sdk.core.SentinelListener;
-import net.notfab.sentinel.sdk.entities.messenger.Embed;
-import net.notfab.sentinel.sdk.entities.messenger.Message;
-import net.notfab.sentinel.sdk.entities.requests.GuildMessengerRequest;
+import net.notfab.eventti.EventHandler;
+import net.notfab.eventti.Listener;
+import net.notfab.sentinel.gateway.jda.mapper.SentinelToJDA;
+import net.notfab.sentinel.sdk.entities.events.MessengerEvent;
 
-public class MessengerListener implements SentinelListener<GuildMessengerRequest> {
+public class MessengerListener implements Listener {
 
-    private final JDA jda;
+    private JDASentinelGateway gateway;
 
-    MessengerListener(JDA jda) {
-        this.jda = jda;
+    MessengerListener(JDASentinelGateway gateway) {
+        this.gateway = gateway;
     }
 
-    @Override
-    public Class<GuildMessengerRequest> getClazz() {
-        return GuildMessengerRequest.class;
-    }
-
-    @Override
-    public boolean isAutoAck() {
-        return false;
-    }
-
-    @Override
-    public boolean onMessage(String channel, GuildMessengerRequest message) {
+    @EventHandler
+    public void onMessage(MessengerEvent message) {
+        JDA jda = this.gateway.getJDA(message.getChannel().getId());
+        if (jda == null) {
+            return;
+        }
         TextChannel textChannel = jda.getTextChannelById(message.getChannel().getId());
         if (textChannel != null) {
-            textChannel.sendMessage(this.prepareMessage(message.getMessage(), message.isOverride()).build()).queue();
-        } else {
-            System.err.println("Unknown TextChannel");
+            textChannel.sendMessage(SentinelToJDA.map(message.getMessage(), message.isOverride()).build()).queue();
         }
-        return true;
-    }
-
-    private MessageBuilder prepareMessage(Message message, boolean isOverride) {
-        MessageBuilder builder = new MessageBuilder();
-        if (message.getContent() != null) {
-            builder.setContent(message.getContent());
-        }
-        if (message.getEmbed() != null) {
-            builder.setEmbed(this.prepareEmbed(message.getEmbed()).build());
-        }
-        if (!isOverride) {
-            builder.stripMentions(this.jda, MentionType.HERE, MentionType.EVERYONE);
-        }
-        return builder;
-    }
-
-    private EmbedBuilder prepareEmbed(Embed embed) {
-        EmbedBuilder builder = new EmbedBuilder();
-        if (embed.getDescription() != null) {
-            builder.setDescription(embed.getDescription());
-        }
-        if (embed.getTitle() != null) {
-            builder.setTitle(embed.getTitle(), embed.getTitleURL());
-        }
-        if (embed.getAuthor() != null) {
-            builder.setAuthor(embed.getAuthor(), embed.getAuthorURL(), embed.getAuthorIcon());
-        }
-        if (!embed.getFieldList().isEmpty()) {
-            embed.getFieldList().forEach(x -> {
-                if (x.isBlank()) {
-                    builder.addBlankField(x.isInline());
-                } else {
-                    builder.addField(x.getName(), x.getValue(), x.isInline());
-                }
-            });
-        }
-        if (embed.getFooter() != null) {
-            builder.setFooter(embed.getFooter(), embed.getFooterIcon());
-        }
-        if (embed.getImage() != null) {
-            builder.setImage(embed.getImage());
-        }
-        if (embed.getThumbnail() != null) {
-            builder.setThumbnail(embed.getThumbnail());
-        }
-        if (embed.getColor() != null) {
-            builder.setColor(embed.getColor());
-        }
-        return builder;
     }
 
 }

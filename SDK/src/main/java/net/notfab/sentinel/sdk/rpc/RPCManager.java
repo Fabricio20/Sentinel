@@ -1,14 +1,16 @@
 package net.notfab.sentinel.sdk.rpc;
 
+import net.notfab.eventti.EventHandler;
+import net.notfab.eventti.Listener;
 import net.notfab.sentinel.sdk.Channels;
+import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.core.ExchangeType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class RPCManager {
+public class RPCManager implements Listener {
 
     private final Map<String, RPCAction> futures = new HashMap<>();
     private final Map<String, RPCFunction> functionMap = new HashMap<>();
@@ -16,9 +18,8 @@ public class RPCManager {
 
     public RPCManager(MessageBroker broker) {
         this.broker = broker;
-        this.broker.registerChannels(ExchangeType.Fanout, Channels.RPC_REQUESTS, Channels.RPC_RESPONSES);
-        this.broker.addListener(new RPCRequestListener(this), Channels.RPC_REQUESTS);
-        this.broker.addListener(new RPCResponseListener(this), Channels.RPC_RESPONSES);
+        this.broker.addListener(this, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
+        this.broker.addListener(this, ExchangeType.DIRECT, Channels.RPC_RESPONSES);
     }
 
     /**
@@ -31,7 +32,7 @@ public class RPCManager {
         request.setTag(UUID.randomUUID().toString());
         RPCAction future = new RPCAction();
         this.futures.put(request.getTag(), future);
-        this.broker.publish(request, Channels.RPC_REQUESTS);
+        this.broker.publish(request, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
         return future;
     }
 
@@ -42,7 +43,7 @@ public class RPCManager {
      */
     public void send(RPCRequest request) {
         request.setTag(UUID.randomUUID().toString());
-        this.broker.publish(request, Channels.RPC_REQUESTS);
+        this.broker.publish(request, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
     }
 
     /**
@@ -54,37 +55,37 @@ public class RPCManager {
         this.functionMap.put(function.getMethod(), function);
     }
 
-    boolean onRequest(RPCRequest request) {
+    @EventHandler
+    public void onRequest(RPCRequest request) {
         if (this.functionMap.containsKey(request.getMethod())) {
             RPCFunction function = this.functionMap.get(request.getMethod());
             Object payload = function.onRequest(request);
             // Non-returning RPC
             if (payload == null) {
-                return true;
-            }
-            // Possible error
-            if (payload instanceof Boolean) {
-                return (boolean) payload;
+                return;
             }
             RPCResponse response = new RPCResponse();
             response.setTag(request.getTag());
             response.setResponse(payload);
-            this.broker.publish(response, Channels.RPC_RESPONSES);
-            return true;
-        } else {
-            return true;
+            this.broker.publish(response, ExchangeType.DIRECT, Channels.RPC_RESPONSES);
         }
     }
 
-    boolean onResponse(RPCResponse response) {
+    @EventHandler
+    public void onResponse(RPCResponse response) {
         if (this.futures.containsKey(response.getTag())) {
             RPCAction action = this.futures.get(response.getTag());
             action.signal(response);
             this.futures.remove(response.getTag());
-            return true;
-        } else {
-            return true;
         }
+    }
+
+    /**
+     * Shuts down this RPC Manager and all underlying systems.
+     */
+    public void shutdown() {
+        this.futures.clear();
+        this.functionMap.clear();
     }
 
 }

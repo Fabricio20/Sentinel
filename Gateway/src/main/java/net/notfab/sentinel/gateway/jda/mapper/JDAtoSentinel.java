@@ -1,11 +1,11 @@
-package net.notfab.sentinel.gateway.mapper;
+package net.notfab.sentinel.gateway.jda.mapper;
 
 import net.notfab.sentinel.sdk.entities.discord.Guild;
 import net.notfab.sentinel.sdk.entities.discord.Member;
 import net.notfab.sentinel.sdk.entities.discord.TextChannel;
 import net.notfab.sentinel.sdk.entities.discord.User;
 
-public class JDAMapper {
+public class JDAtoSentinel {
 
     public static Member map(net.dv8tion.jda.api.entities.Member entity) {
         Member member = new Member();

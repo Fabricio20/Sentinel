@@ -1,13 +1,13 @@
 package net.notfab.sentinel.sdk.rpc;
 
 import lombok.Data;
-import net.notfab.sentinel.sdk.entities.SentinelMessage;
+import net.notfab.eventti.Event;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class RPCRequest implements SentinelMessage {
+public class RPCRequest extends Event {
 
     private String tag;
     private String method;

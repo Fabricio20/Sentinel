@@ -9,7 +9,6 @@ import net.notfab.sentinel.sdk.rpc.RPCResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unchecked")
 public class RPC {
@@ -25,7 +24,7 @@ public class RPC {
         roleRequest.setMethod("getMembers");
         roleRequest.addParam("guild", guild.getId());
         RPCAction roleAction = this.manager.ask(roleRequest);
-        RPCResponse response = roleAction.complete(5, TimeUnit.SECONDS);
+        RPCResponse response = roleAction.complete();
         if (response != null && response.getResponse() != null) {
             return (List<Member>) response.getResponse();
         }

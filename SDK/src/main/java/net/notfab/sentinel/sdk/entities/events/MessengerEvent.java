@@ -1,12 +1,12 @@
-package net.notfab.sentinel.sdk.entities.requests;
+package net.notfab.sentinel.sdk.entities.events;
 
 import lombok.Data;
-import net.notfab.sentinel.sdk.entities.SentinelMessage;
+import net.notfab.eventti.Event;
 import net.notfab.sentinel.sdk.entities.discord.TextChannel;
 import net.notfab.sentinel.sdk.entities.messenger.Message;
 
 @Data
-public class GuildMessengerRequest implements SentinelMessage {
+public class MessengerEvent extends Event {
 
     private TextChannel channel;
     private Message message;

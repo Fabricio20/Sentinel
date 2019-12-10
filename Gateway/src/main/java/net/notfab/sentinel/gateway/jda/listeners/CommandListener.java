@@ -1,11 +1,13 @@
-package net.notfab.sentinel.gateway.jda;
+package net.notfab.sentinel.gateway.jda.listeners;
 
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.notfab.sentinel.gateway.BotPrefix;
 import net.notfab.sentinel.gateway.SentinelGateway;
-import net.notfab.sentinel.gateway.mapper.JDAMapper;
+import net.notfab.sentinel.gateway.jda.mapper.JDAtoSentinel;
 import net.notfab.sentinel.sdk.Channels;
+import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.entities.events.CommandEvent;
 
@@ -19,12 +21,12 @@ import java.util.regex.Pattern;
 public class CommandListener extends ListenerAdapter {
 
     private final Pattern argPattern = Pattern.compile("(?:([^\\s\"]+)|\"((?:\\w+|\\\\\"|[^\"])+)\")");
-    private final SentinelGateway gateway;
     private final MessageBroker broker;
+    private final SentinelGateway gateway;
 
-    public CommandListener(SentinelGateway gateway, MessageBroker broker) {
-        this.gateway = gateway;
+    public CommandListener(MessageBroker broker, SentinelGateway gateway) {
         this.broker = broker;
+        this.gateway = gateway;
     }
 
     @Override
@@ -36,12 +38,18 @@ public class CommandListener extends ListenerAdapter {
         }
         String prefix = null;
         // -- Find Prefix
-        if (rawMessage.split("\\s+")[0].equals("<@147409622603399168>")) {
-            prefix = "@LewdBeta";
-        } else if (rawMessage.split("\\s+")[0].equals("<@!147409622603399168>")) {
+        SelfUser selfUser = event.getJDA().getSelfUser();
+        String split = rawMessage.split("\\s+")[0];
+        if (split.equals("<@" + selfUser.getId() + ">")) {
+            prefix = "@" + selfUser.getName();
+        } else if (split.equals("<@!" + selfUser.getId() + ">")) {
             prefix = "@" + event.getGuild().getSelfMember().getNickname();
-        } else if (rawMessage.split("\\s+")[0].toLowerCase().startsWith("l!")) {
-            prefix = rawMessage.split("!")[0] + "!"; // l!
+        } else {
+            prefix = this.gateway.getPrefixList(event.getGuild().getIdLong()).parallelStream()
+                    .filter(x -> x.getRawContent().equalsIgnoreCase(split))
+                    .map(BotPrefix::getDisplayContent)
+                    .findAny()
+                    .orElse(null);
         }
         // -- End Prefix Finder
         if (prefix == null) {
@@ -60,13 +68,9 @@ public class CommandListener extends ListenerAdapter {
         CommandEvent commandEvent = new CommandEvent();
         commandEvent.setArgs(arguments.toArray(new String[0]));
         commandEvent.setName(commandName);
-        commandEvent.setMember(JDAMapper.map(Objects.requireNonNull(event.getMember())));
-        commandEvent.setChannel(JDAMapper.map(event.getChannel()));
-        broker.publish(commandEvent, Channels.COMMAND_PREFIX + commandName.toUpperCase());
-    }
-
-    private List<String> getPrefixes(Guild guild) {
-        return this.gateway.getPrefixProvider().apply(guild.getIdLong());
+        commandEvent.setMember(JDAtoSentinel.map(Objects.requireNonNull(event.getMember())));
+        commandEvent.setChannel(JDAtoSentinel.map(event.getChannel()));
+        broker.publish(commandEvent, ExchangeType.QUEUE, Channels.COMMAND_PREFIX + commandName.toLowerCase());
     }
 
     private List<String> getArguments(String rawArgs) {

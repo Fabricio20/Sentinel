@@ -19,15 +19,7 @@ public class RPCAction {
     }
 
     public RPCResponse complete() {
-        lock.lock();
-        try {
-            this.condition.await(5, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        } finally {
-            lock.unlock();
-        }
-        return this.response;
+        return this.complete(5, TimeUnit.SECONDS);
     }
 
     public RPCResponse complete(long timeout, TimeUnit timeUnit) {

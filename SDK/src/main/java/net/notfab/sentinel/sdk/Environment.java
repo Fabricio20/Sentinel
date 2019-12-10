@@ -16,4 +16,8 @@ public class Environment {
         }
     }
 
+    public static boolean has(String name) {
+        return System.getenv(name) != null;
+    }
+
 }
