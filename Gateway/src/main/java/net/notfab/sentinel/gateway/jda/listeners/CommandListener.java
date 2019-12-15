@@ -9,7 +9,7 @@ import net.notfab.sentinel.gateway.jda.mapper.JDAtoSentinel;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.entities.events.CommandEvent;
+import net.notfab.sentinel.sdk.discord.events.CommandEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

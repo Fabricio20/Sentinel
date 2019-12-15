@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message.MentionType;
-import net.notfab.sentinel.sdk.entities.messenger.Embed;
-import net.notfab.sentinel.sdk.entities.messenger.Message;
+import net.notfab.sentinel.sdk.discord.messenger.Embed;
+import net.notfab.sentinel.sdk.discord.messenger.Message;
 
 public class SentinelToJDA {
 

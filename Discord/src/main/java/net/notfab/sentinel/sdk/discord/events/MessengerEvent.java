@@ -1,9 +1,9 @@
-package net.notfab.sentinel.sdk.entities.events;
+package net.notfab.sentinel.sdk.discord.events;
 
 import lombok.Data;
 import net.notfab.eventti.Event;
-import net.notfab.sentinel.sdk.entities.discord.TextChannel;
-import net.notfab.sentinel.sdk.entities.messenger.Message;
+import net.notfab.sentinel.sdk.discord.entities.TextChannel;
+import net.notfab.sentinel.sdk.discord.messenger.Message;
 
 @Data
 public class MessengerEvent extends Event {

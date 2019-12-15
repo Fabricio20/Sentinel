@@ -1,4 +1,4 @@
-package net.notfab.sentinel.sdk.entities.discord;
+package net.notfab.sentinel.sdk.discord.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

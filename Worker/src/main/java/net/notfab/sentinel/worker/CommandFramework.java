@@ -5,7 +5,7 @@ import net.notfab.eventti.Listener;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.entities.events.CommandEvent;
+import net.notfab.sentinel.sdk.discord.events.CommandEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

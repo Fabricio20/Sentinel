@@ -1,8 +1,8 @@
 package net.notfab.sentinel.worker;
 
 import lombok.Getter;
-import net.notfab.sentinel.sdk.entities.discord.Member;
-import net.notfab.sentinel.sdk.entities.discord.TextChannel;
+import net.notfab.sentinel.sdk.discord.entities.Member;
+import net.notfab.sentinel.sdk.discord.entities.TextChannel;
 
 import java.util.Arrays;
 import java.util.List;

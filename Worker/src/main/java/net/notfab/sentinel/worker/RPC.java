@@ -1,7 +1,7 @@
 package net.notfab.sentinel.worker;
 
-import net.notfab.sentinel.sdk.entities.discord.Guild;
-import net.notfab.sentinel.sdk.entities.discord.Member;
+import net.notfab.sentinel.sdk.discord.entities.Guild;
+import net.notfab.sentinel.sdk.discord.entities.Member;
 import net.notfab.sentinel.sdk.rpc.RPCAction;
 import net.notfab.sentinel.sdk.rpc.RPCManager;
 import net.notfab.sentinel.sdk.rpc.RPCRequest;

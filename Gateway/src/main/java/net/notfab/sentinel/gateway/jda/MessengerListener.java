@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.notfab.eventti.EventHandler;
 import net.notfab.eventti.Listener;
 import net.notfab.sentinel.gateway.jda.mapper.SentinelToJDA;
-import net.notfab.sentinel.sdk.entities.events.MessengerEvent;
+import net.notfab.sentinel.sdk.discord.events.MessengerEvent;
 
 public class MessengerListener implements Listener {
 

@@ -3,12 +3,12 @@ package net.notfab.sentinel.worker;
 import net.notfab.sentinel.sdk.Channels;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
-import net.notfab.sentinel.sdk.entities.discord.TextChannel;
-import net.notfab.sentinel.sdk.entities.messenger.Embed;
-import net.notfab.sentinel.sdk.entities.messenger.EmbedBuilder;
-import net.notfab.sentinel.sdk.entities.messenger.Message;
-import net.notfab.sentinel.sdk.entities.messenger.MessageBuilder;
-import net.notfab.sentinel.sdk.entities.events.MessengerEvent;
+import net.notfab.sentinel.sdk.discord.entities.TextChannel;
+import net.notfab.sentinel.sdk.discord.messenger.Embed;
+import net.notfab.sentinel.sdk.discord.messenger.EmbedBuilder;
+import net.notfab.sentinel.sdk.discord.messenger.Message;
+import net.notfab.sentinel.sdk.discord.messenger.MessageBuilder;
+import net.notfab.sentinel.sdk.discord.events.MessengerEvent;
 
 public class Messenger {
 

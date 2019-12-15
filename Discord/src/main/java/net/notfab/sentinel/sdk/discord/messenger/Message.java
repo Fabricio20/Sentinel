@@ -1,4 +1,4 @@
-package net.notfab.sentinel.sdk.entities.messenger;
+package net.notfab.sentinel.sdk.discord.messenger;
 
 import lombok.Data;
 

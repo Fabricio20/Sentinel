@@ -1,9 +1,9 @@
 package net.notfab.sentinel.gateway.jda.mapper;
 
-import net.notfab.sentinel.sdk.entities.discord.Guild;
-import net.notfab.sentinel.sdk.entities.discord.Member;
-import net.notfab.sentinel.sdk.entities.discord.TextChannel;
-import net.notfab.sentinel.sdk.entities.discord.User;
+import net.notfab.sentinel.sdk.discord.entities.Guild;
+import net.notfab.sentinel.sdk.discord.entities.Member;
+import net.notfab.sentinel.sdk.discord.entities.TextChannel;
+import net.notfab.sentinel.sdk.discord.entities.User;
 
 public class JDAtoSentinel {
 
