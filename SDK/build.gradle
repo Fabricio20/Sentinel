@@ -4,17 +4,8 @@ plugins {
     id 'io.freefair.lombok' version '3.2.0'
 }
 
-def getGitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
-
 group 'net.notfab.sentinel'
-version = '1.0-' + getGitHash()
+version = '1.0'
 
 sourceCompatibility = targetCompatibility = 11
 

@@ -18,6 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This is the main sentinel component, it is to be considered a Singleton.
+ */
 public class MessageBroker {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageBroker.class);

@@ -1,8 +1,9 @@
 package net.notfab.sentinel.sdk.rpc;
 
+import lombok.Getter;
 import net.notfab.eventti.EventHandler;
 import net.notfab.eventti.Listener;
-import net.notfab.sentinel.sdk.Channels;
+import net.notfab.sentinel.sdk.DiscordChannels;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
 
@@ -10,20 +11,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The RPC Manager for Sentinel. Treat it as a Singleton.
+ */
 public class RPCManager implements Listener {
 
     private final Map<String, RPCAction> futures = new HashMap<>();
     private final Map<String, RPCFunction> functionMap = new HashMap<>();
     private final MessageBroker broker;
 
+    @Getter
+    private static RPCManager Instance;
+
     public RPCManager(MessageBroker broker) {
+        Instance = this;
         this.broker = broker;
-        this.broker.addListener(this, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
-        this.broker.addListener(this, ExchangeType.DIRECT, Channels.RPC_RESPONSES);
+        this.broker.addListener(this, ExchangeType.DIRECT, DiscordChannels.RPC_REQUESTS);
+        this.broker.addListener(this, ExchangeType.DIRECT, DiscordChannels.RPC_RESPONSES);
     }
 
     /**
-     * Requests a remote procedure from tne network.
+     * Requests a remote procedure from the network.
      *
      * @param request - RPC Request.
      * @return RPCAction (Async/Sync).
@@ -32,7 +40,7 @@ public class RPCManager implements Listener {
         request.setTag(UUID.randomUUID().toString());
         RPCAction future = new RPCAction();
         this.futures.put(request.getTag(), future);
-        this.broker.publish(request, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
+        this.broker.publish(request, ExchangeType.DIRECT, DiscordChannels.RPC_REQUESTS);
         return future;
     }
 
@@ -43,7 +51,7 @@ public class RPCManager implements Listener {
      */
     public void send(RPCRequest request) {
         request.setTag(UUID.randomUUID().toString());
-        this.broker.publish(request, ExchangeType.DIRECT, Channels.RPC_REQUESTS);
+        this.broker.publish(request, ExchangeType.DIRECT, DiscordChannels.RPC_REQUESTS);
     }
 
     /**
@@ -67,7 +75,7 @@ public class RPCManager implements Listener {
             RPCResponse response = new RPCResponse();
             response.setTag(request.getTag());
             response.setResponse(payload);
-            this.broker.publish(response, ExchangeType.DIRECT, Channels.RPC_RESPONSES);
+            this.broker.publish(response, ExchangeType.DIRECT, DiscordChannels.RPC_RESPONSES);
         }
     }
 
