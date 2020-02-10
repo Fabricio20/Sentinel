@@ -12,8 +12,8 @@ public class Worker {
         MessageBroker broker = new MessageBroker();
         RPCManager manager = new RPCManager(broker);
         CommandFramework commandFramework = new CommandFramework(broker);
-        commandFramework.add(new HelloCommand());
-        commandFramework.add(new EmbedCommand());
+        commandFramework.register(new HelloCommand());
+        commandFramework.register(new EmbedCommand());
     }
 
 }

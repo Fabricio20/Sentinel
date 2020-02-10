@@ -5,7 +5,6 @@ plugins {
 }
 
 group 'net.notfab.sentinel'
-version = '1.0'
 
 sourceCompatibility = targetCompatibility = 11
 
@@ -40,8 +39,8 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             groupId group
-            artifactId rootProject.name
-            version version
+            artifactId "sdk"
+            version rootProject.version
             artifact javadocJar
             artifact sourcesJar
         }

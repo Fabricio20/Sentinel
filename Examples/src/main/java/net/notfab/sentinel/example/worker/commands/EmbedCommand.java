@@ -1,10 +1,10 @@
 package net.notfab.sentinel.example.worker.commands;
 
-import net.notfab.sentinel.example.worker.Messenger;
 import net.notfab.sentinel.sdk.discord.command.SentinelCommand;
 import net.notfab.sentinel.sdk.discord.entities.Member;
 import net.notfab.sentinel.sdk.discord.entities.TextChannel;
 import net.notfab.sentinel.sdk.discord.messenger.EmbedBuilder;
+import net.notfab.sentinel.sdk.discord.messenger.Messenger;
 
 public class EmbedCommand extends SentinelCommand {
 

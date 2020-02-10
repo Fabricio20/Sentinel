@@ -44,6 +44,11 @@ public class MessageBroker {
         }
     }
 
+    public MessageBroker(String redisPassword, String redisIP) {
+        Instance = this;
+        this.jedisPool = new JedisPool(new RedisConfig(), redisIP, 6379, 2000, redisPassword);
+    }
+
     /**
      * Adds a listener (can listen to multiple events).
      *
@@ -99,6 +104,15 @@ public class MessageBroker {
         } catch (Exception ex) {
             logger.error("Error publishing message to network", ex);
         }
+    }
+
+    /**
+     * Retrieves a redis connection.
+     *
+     * @return Jedis.
+     */
+    public Jedis getBackend() {
+        return this.jedisPool.getResource();
     }
 
     /**

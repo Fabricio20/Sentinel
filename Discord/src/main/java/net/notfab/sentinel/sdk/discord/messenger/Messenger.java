@@ -1,13 +1,8 @@
-package net.notfab.sentinel.example.worker;
+package net.notfab.sentinel.sdk.discord.messenger;
 
-import net.notfab.sentinel.sdk.DiscordChannels;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
 import net.notfab.sentinel.sdk.discord.entities.TextChannel;
-import net.notfab.sentinel.sdk.discord.messenger.Embed;
-import net.notfab.sentinel.sdk.discord.messenger.EmbedBuilder;
-import net.notfab.sentinel.sdk.discord.messenger.Message;
-import net.notfab.sentinel.sdk.discord.messenger.MessageBuilder;
 import net.notfab.sentinel.sdk.discord.events.MessengerEvent;
 
 public class Messenger {
@@ -32,7 +27,7 @@ public class Messenger {
         MessengerEvent request = new MessengerEvent();
         request.setChannel(channel);
         request.setMessage(message);
-        MessageBroker.getInstance().publish(request, ExchangeType.DIRECT, DiscordChannels.MESSENGER);
+        MessageBroker.getInstance().publish(request, ExchangeType.DIRECT, "Sentinel:Hub:Messenger");
     }
 
 }
