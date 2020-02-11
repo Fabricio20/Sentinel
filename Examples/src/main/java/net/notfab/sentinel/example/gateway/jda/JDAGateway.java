@@ -5,27 +5,26 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.notfab.sentinel.example.gateway.jda.rpc.MembersRPC;
-import net.notfab.sentinel.sdk.DiscordChannels;
+import net.notfab.sentinel.example.gateway.jda.actions.MembersRPC;
 import net.notfab.sentinel.sdk.Environment;
 import net.notfab.sentinel.sdk.ExchangeType;
 import net.notfab.sentinel.sdk.MessageBroker;
+import net.notfab.sentinel.sdk.actions.ActionRegistry;
 import net.notfab.sentinel.sdk.discord.command.CommandFramework;
-import net.notfab.sentinel.sdk.rpc.RPCManager;
 
 import javax.annotation.Nonnull;
 
 public class JDAGateway extends ListenerAdapter {
 
     private final MessageBroker messageBroker;
-    private final RPCManager rpcManager;
+    private final ActionRegistry actionRegistry;
     private final CommandFramework commandFramework;
 
     private ShardManager shardManager;
 
     public JDAGateway() {
         this.messageBroker = new MessageBroker();
-        this.rpcManager = new RPCManager(this.messageBroker);
+        this.actionRegistry = new ActionRegistry(this.messageBroker);
         this.commandFramework = new CommandFramework(this.messageBroker);
         try {
             this.shardManager = new DefaultShardManagerBuilder()
@@ -45,9 +44,9 @@ public class JDAGateway extends ListenerAdapter {
     private void addSentinelHooks() {
         // Sentinel
         this.messageBroker.addListener(new MessengerListener(this.shardManager),
-                ExchangeType.DIRECT, DiscordChannels.MESSENGER);
+                ExchangeType.DIRECT, "Sentinel:Hub:Messenger");
         // Sentinel RPC
-        this.rpcManager.addFunction(new MembersRPC(this.shardManager));
+        this.actionRegistry.register("getMembers", new MembersRPC(this.shardManager));
     }
 
     @Override
