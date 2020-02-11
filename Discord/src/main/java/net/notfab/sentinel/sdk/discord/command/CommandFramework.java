@@ -32,7 +32,6 @@ public class CommandFramework implements Listener {
      * Registers a command on the network.
      *
      * @param command - Command to add.
-     * @apiNote Usually used by workers.
      */
     public void register(SentinelCommand command) {
         this.broker.publish(new CommandRegisterEvent(command.getNames()), ExchangeType.DIRECT, EVENT_HUB);
@@ -67,7 +66,6 @@ public class CommandFramework implements Listener {
      * Sends a command to the network.
      *
      * @param event - Command event.
-     * @apiNote Usually used by gateways.
      */
     public void fire(CommandEvent event) {
         try (Jedis jedis = this.broker.getBackend()) {

@@ -86,6 +86,7 @@ public class EmbedBuilder {
      * Sets the Embed color via HEX. The # in front is MANDATORY.
      *
      * @param colorHex - Color to Use.
+     * @return Builder for chaining.
      */
     public EmbedBuilder setColorHex(String colorHex) {
         Color color = new Color(Integer.valueOf(colorHex.substring(1, 3), 16),
