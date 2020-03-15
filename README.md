@@ -4,6 +4,8 @@ Sentinel is a **WORK-IN-PROGRESS** microservice-like SDK for Discord Bots inspir
 
 Example implementations are available in the `Examples` directory.
 
+For a generic, non-discord implementation check out `SDK` (REDIS) and `MQTT` (RabbitMQ) directories.
+
 ### Design
 
 The default Sentinel SDK is abstract, meaning you can use it outside of a Discord bot implementation.
